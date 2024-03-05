@@ -35,7 +35,7 @@ void log(string message) {
         }
         log_file << message;
     } catch (...) {
-        cerr << "Ooops!" << std::endl;
+        
     }
 }
 
