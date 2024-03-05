@@ -18,6 +18,7 @@ ABSL_FLAG(std::string, target, "localhost:50051", "Server address");
 ABSL_FLAG(int64_t, tries, 1, "Number of factoring tries");
 ABSL_FLAG(bool, quiet, false, "Should results be sent to stdout");
 ABSL_FLAG(bool, time, false, "Should we time the run");
+ABSL_FLAG(bool, forever, false, "Should we loop forever");
 
 using grpc::Channel;
 using grpc::ClientContext;
@@ -93,18 +94,23 @@ int main(int argc, char **argv)
 
     long tries = absl::GetFlag(FLAGS_tries);
     bool time = absl::GetFlag(FLAGS_time);
-    high_resolution_clock::time_point start = high_resolution_clock::now(); 
 
-    for (int i = 0; i < tries; i++)
+    do
     {
-        int reply = factorer.Factor(rand(), absl::GetFlag(FLAGS_quiet));
-    }
+        high_resolution_clock::time_point start = high_resolution_clock::now();
 
-    if (time) {
-        high_resolution_clock::time_point stop = high_resolution_clock::now(); 
-        duration<double, std::milli> timeRequired = (stop - start);
-        cout << "Duration for " << tries << " runs = " << timeRequired.count() << "ms" << std::endl;
-    }
+        for (int i = 0; i < tries; i++)
+        {
+            int reply = factorer.Factor(rand(), absl::GetFlag(FLAGS_quiet));
+        }
+
+        if (time)
+        {
+            high_resolution_clock::time_point stop = high_resolution_clock::now();
+            duration<double, std::milli> timeRequired = (stop - start);
+            cout << "Duration for " << tries << " runs = " << timeRequired.count() << "ms" << std::endl;
+        }
+    } while (absl::GetFlag(FLAGS_forever));
 
     return 0;
 }

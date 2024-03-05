@@ -1,6 +1,7 @@
 // C++ program to print all prime factors
 #include <bits/stdc++.h>
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <string>
 
@@ -25,6 +26,20 @@ using simplefactor::FactorReply;
 using simplefactor::FactorRequest;
 
 ABSL_FLAG(uint16_t, port, 50051, "Server port for the service");
+ABSL_FLAG(std::string, log_file_name, "log.txt", "Name of log file");
+
+ofstream log_file;
+
+void log(string message) {
+    try {
+        if (!log_file.is_open()) {
+            log_file.open(absl::GetFlag(FLAGS_log_file_name));
+        }
+        log_file << message << std::endl;
+    } catch (...) {
+        // Do nothing
+    }
+}
 
 class FactorerServiceImpl final : public Factorer::Service
 {
