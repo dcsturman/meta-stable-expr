@@ -1,12 +1,10 @@
-// C++ program to print all prime factors
-#include <bits/stdc++.h>
 #include <iostream>
 #include <fstream>
 #include <memory>
 #include <string>
 
 using namespace std;
-// #include "SimpleFactors.pb.h"
+
 #include "SimpleFactors.grpc.pb.h"
 
 #include "absl/flags/flag.h"
@@ -35,9 +33,9 @@ void log(string message) {
         if (!log_file.is_open()) {
             log_file.open(absl::GetFlag(FLAGS_log_file_name));
         }
-        log_file << message << std::endl;
+        log_file << message;
     } catch (...) {
-        // Do nothing
+        cerr << "Ooops!" << std::endl;
     }
 }
 
@@ -54,9 +52,10 @@ class FactorerServiceImpl final : public Factorer::Service
 
     void primeFactors(int n, FactorReply *reply)
     {
+        log("Factor " + to_string(n) + ": ");
         while (n % 2 == 0)
         {
-            cout << 2 << " ";
+            log("2 ");
             reply->add_factors(2);
             n = n / 2;
         }
@@ -66,15 +65,16 @@ class FactorerServiceImpl final : public Factorer::Service
 
             while (n % i == 0)
             {
-                cout << i << " ";
+                log(to_string(i) + " ");
                 reply->add_factors(i);
                 n = n / i;
             }
         }
         if (n > 2) {
-            cout << n << " ";
+            log(to_string(n) + "\n"
+            );
             reply->add_factors(n);
-        }
+        } else log("\n");
 
     }
 };
@@ -102,6 +102,8 @@ void RunServer(uint16_t port) {
 
 int main(int argc, char** argv) {
   absl::ParseCommandLine(argc, argv);
+  log_file.exceptions(std::ios_base::failbit);
+  cout << "Logging to " << absl::GetFlag(FLAGS_log_file_name) << std::endl;
   RunServer(absl::GetFlag(FLAGS_port));
   return 0;
 }
