@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package simplefactor;
+
+// The greeting service definition.
+service Factorer {
+  // Sends a greeting
+  rpc Factor (FactorRequest) returns (FactorReply) {}
+}
+
+// The request message containing the user's name.
+message FactorRequest {
+  int64 target= 1;
+}
+
+// The response message containing the greetings
+message FactorReply {
+  repeated int64 factors = 1;
+}
