@@ -60,8 +60,6 @@ class FactorClient {
             }
             return num_factors;
         } else {
-            std::cout << status.error_code() << ": " << status.error_message()
-                      << std::endl;
             return -1;
         }
     }
